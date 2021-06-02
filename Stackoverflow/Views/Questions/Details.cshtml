@@ -1,0 +1,212 @@
+﻿@model Stackoverflow.Models.Question
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>@Model.Title</h2>
+
+<p>@Model.Details</p>
+
+<div class="taglist">
+    @foreach (var qt in Model.Tags)
+    {
+        if (qt.QuestionId == Model.Id)
+        {
+            <div class="tag">@Html.ActionLink(qt.Tag.Name, "ShowQuestions", "Tags", new { id = qt.TagId }, new { style = "color:black;text-decoration:none" })</div>
+        }
+    }
+</div>
+
+<button class="addtag" type="button">
+    <p class="link">
+        @Html.ActionLink("Add Tag", "AddTagToQuestion", new { id = Model.Id }, new { style = "color: white;text-decoration:none" })
+    </p>
+</button>
+<hr />
+
+<h4>Votes</h4>
+
+<div class="details">
+    <div class="voting">
+        <div class="buttons">
+            @using (Html.BeginForm("VoteIncrease", "Questions", new { questionId = Model.Id }, FormMethod.Post))
+            {
+                <button type="submit" class="triangle-up"></button>
+            }
+            <br />
+            @using (Html.BeginForm("VoteDecrease", "Questions", new { questionId = Model.Id }, FormMethod.Post))
+            {
+                <button type="submit" class="triangle-down"></button>
+            }
+        </div>
+        <div class="number">
+            @Html.DisplayFor(modelItem => Model.Votes)
+        </div>
+    </div>
+    <div style="width:50%">
+        <h4>Comments !</h4>
+        @if (Model.Comments != null)
+        {
+            <ul>
+                @foreach (var item in Model.Comments)
+                {
+                    <li>@item.Content</li>
+                }
+            </ul>
+        }
+        else
+        {
+            <ul>
+                <li>No comments !!</li>
+            </ul>
+        }
+        <button class="post" type="button">
+            <p class="link">
+                @Html.ActionLink("Post Comment", "PostCommentOnQuestion", new { id = Model.Id }, new { style = "color: white;text-decoration:none" })
+            </p>
+        </button>
+    </div>
+    <div class="userDetails">
+        <dl class="dl-horizontal userDetails">
+            <dd>
+                <b style="font-size:17px"> Question By:</b>
+                <br />
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.ApplicationUser.Email):
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ApplicationUser.Email)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Timeposted):
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Timeposted)
+            </dd>
+            <dt>
+                Reputation Points:
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.ApplicationUser.Reputation)
+            </dd>
+        </dl>
+    </div>
+</div>
+
+<button class="question" type="button">
+    <p class="link">
+        @Html.ActionLink("Post Answer", "PostAnswer", new { id = Model.Id }, new { style = "color: white;text-decoration:none" })
+    </p>
+</button>
+
+@if (Model.Answers != null)
+{
+    <table class="table">
+        <tr>
+            <th style="width:10%">
+                Votes
+            </th>
+            <th style="width:70%">
+                Content
+            </th>
+            <th style="width:20%">
+                Comments
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Answers)
+        {
+            <tr>
+                <td>
+                    <div class="vote">
+                        <div class="buttons">
+                            @using (Html.BeginForm("VoteIncrease", "Questions", new { id = item.Id }, FormMethod.Post))
+                            {
+                                <button type="submit" class="triangle-up"></button>
+                            }
+                            <br />
+                            @using (Html.BeginForm("VoteDecrease", "Questions", new { id = item.Id }, FormMethod.Post))
+                            {
+                                <button type="submit" class="triangle-down"></button>
+                            }
+                        </div>
+                        <div class="number">
+                            @Html.DisplayFor(modelItem => item.Votes)
+                        </div>
+                    </div>
+                    <br />
+                    <div>
+                        @using (Html.BeginForm("UsefulAnswer", "Questions", new { id = item.Id, questionId = Model.Id }, FormMethod.Post))
+                        {
+                            <button type="submit" class="use" style="color: white">Useful</button>
+                        }
+                        @if (item.Isaccepted == true)
+                        {
+                            <div class="check"></div>
+                        }
+                    </div>
+                    <br />
+                    <br />
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Content)
+                    <br />
+                    <br />
+                    <div class="userDetails" style="font-size:15px;float:right">
+                        <dl class="dl-horizontal userDetails">
+                            <dd>
+                                <b>Answer By:</b>
+                                <br />
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(modelItem => item.ApplicationUser.Email):
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(modelItem => item.ApplicationUser.Email)
+                            </dd>
+                            <dt>
+                                Reputation Points:
+                            </dt>
+                            <dd>
+                                @Html.DisplayFor(modelItem => item.ApplicationUser.Reputation)
+                            </dd>
+                        </dl>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        @if (item.Comments != null)
+                        {
+                            <ul>
+                                @foreach (var c in item.Comments)
+                                {
+                                    <li>@c.Content</li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul>
+                                <li>No comments !!</li>
+                            </ul>
+                        }
+                        <button class="post" type="button">
+                            <p class="link">
+                                @Html.ActionLink("Post Comment", "PostCommentOnAnswer", new { id = item.Id, questionId = Model.Id }, new { style = "color: white; text-decoration:none" })
+                            </p>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+<button class="question" type="button">
+    <p class="link">
+        @Html.ActionLink("Back to List", "Index", null, new { style = "color: white;text-decoration:none" })
+    </p>
+</button>

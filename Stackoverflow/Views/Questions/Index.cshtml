@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Stackoverflow.Models.Question>
+
+@{
+    ViewBag.Title = "Questions";
+}
+
+<div class="titles">
+    <h2 class="left">Questions</h2>
+    <h4 class="right">Sort by:</h4>
+</div>
+
+<div class="navigate">
+    <div class="nav1">
+        <button class="question" type="button"><p class="link"> @Html.ActionLink("Ask Question", "Create", null, new { style = "color: white;text-decoration:none" }) </p></button>
+    </div>
+    <div class="nav2">
+        <button class="question2" type="button"><p class="link"> @Html.ActionLink("Most Answered", "Sort", new { type = "MostAnswer" }, new { style = "color: white;text-decoration:none" }) </p></button>
+        <button class="question2" type="button"><p class="link"> @Html.ActionLink("Less Answered", "Sort", new { type = "LessAnswer" }, new { style = "color: white;text-decoration:none" }) </p></button>
+        <button class="question2" type="button"><p class="link"> @Html.ActionLink("Newest First", "Sort", new { type = "Oldest" }, new { style = "color: white;text-decoration:none" }) </p></button>
+
+    </div>
+</div>
+<table class="table">
+    <tr>
+        <th style="width:20%">
+        </th>
+        <th style="width:50%">
+            Question Title
+        </th>
+        <th style="width:30%">
+            Question by
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td style="padding: 20px;text-align:center">
+                <div>
+                    <div>
+                        Votes
+                    </div>
+                    <div>
+                        @Html.DisplayFor(modelItem => item.Votes)
+                    </div>
+                </div>
+                <div>
+                    <div>
+                        Answers
+                    </div>
+                    <div>
+                        @Html.DisplayFor(modelItem => item.Answers.Count)
+                    </div>
+                </div>
+            </td>
+            <td>
+                <b style="font-size:20px">@Html.ActionLink(item.Title, "Details", new { id = item.Id }, new { style = "color:black;text-decoration:none" })</b>
+
+                <p style="font-size:16px">@item.Details</p>
+
+                <div class="taglist">
+                    @if (item.Tags != null)
+                    {
+                        foreach (var qt in item.Tags)
+                        {
+                            <div class="tag">@Html.ActionLink(qt.Tag.Name, "ShowQuestions", "Tags", new { id = qt.TagId }, new { style = "color:black;text-decoration:none" })</div>
+                        }
+                    }
+                </div>
+            </td>
+            <td>
+                <b>User: </b>@Html.DisplayFor(modelItem => item.ApplicationUser.Email)
+                <br />
+                <b>Reputation Points: </b>@Html.DisplayFor(modelItem => item.ApplicationUser.Reputation)
+                <br />
+                <b>Date and time: </b>@Html.DisplayFor(modelItem => item.Timeposted)
+
+            </td>
+        </tr>
+    }
+
+</table>

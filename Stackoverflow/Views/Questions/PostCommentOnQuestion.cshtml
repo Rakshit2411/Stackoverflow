@@ -1,0 +1,31 @@
+﻿@model Stackoverflow.Models.Question
+@{
+    ViewBag.Title = "PostCommentOnQuestion";
+}
+
+<h2>Post Comment On Question</h2>
+
+@using (Html.BeginForm(FormMethod.Post))
+{
+    <div>
+        @Html.HiddenFor(model => model.Id)
+        <br />
+        <div class="text">
+            @Html.TextArea("Content")
+        </div>
+        <button type="submit" class="sub">Post</button>
+    </div>
+}
+<div>
+    <button class="question" type="button">
+        <p class="link">
+            @Html.ActionLink("Back to Question", "Details", new { id = Model.Id }, new { style = "color: white;text-decoration:none" })
+        </p>
+    </button>
+    <button class="question" type="button">
+        <p class="link">
+            @Html.ActionLink("Back to List", "Index", null, new { style = "color: white;text-decoration:none" })
+        </p>
+    </button>
+</div>
+
